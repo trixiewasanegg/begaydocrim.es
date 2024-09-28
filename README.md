@@ -10,3 +10,6 @@ Intended to replace my Wordpress blog [TrixiesManyThoughts.wordpress.com](https:
 Frontend will be built relatively raw HTML & CSS around Markdown, Zero-MD, and all that funky fresh stuff.
 
 Backend bot will run in Python, using a Discord server as a quasi-CMS dashboard.
+
+## TO-DO:
+Update dotenv-example, make it easier to understand
