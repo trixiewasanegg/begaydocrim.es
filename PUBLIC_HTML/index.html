@@ -1,0 +1,46 @@
+<html>
+<head>
+    <!-- (c) 2024 - Pissshit.com | GNU General Public License v3.0 -->
+    
+    <title> pissshit.com | Why? </title>
+
+        <!-- Stylesheet & favicon link -->
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <link rel="stylesheet" href="style.css">
+
+		<!-- Google font link-->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Baskervville+SC&family=Pacifico&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+        <!-- Lightweight client-side loader that feature-detects and load polyfills only when necessary -->
+        <script src="https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2/webcomponents-loader.min.js"></script>
+        <!-- Load the element definition -->
+        <script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@1/src/zero-md.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="title">
+            <h1><a href="https://pissshit.com">PissShit.com</a></h1>
+            <i>The only website</i>
+        </div>
+        <div class="navBar">
+            <div><a href="/">Home</a></div>
+            <div><a href="/posts">Blog</a></div>
+            <div><a href="/">Other Shit</a></div>
+        </div>
+    </div>        
+    <div class="body">
+        <div class="sidebar">
+            <zero-md src="/microMessages.md"></zero-md>
+        </div>
+        <div class="content">
+            <zero-md src="/about.md"></zero-md>
+        </div>
+    </div>
+    
+</div>
+    
+</body>
+</html>

@@ -1,0 +1,118 @@
+body {
+    overflow: hidden;
+    background-color: #696969;
+}
+
+zero-md {
+    padding: 10px;
+    background-color: #ffffff;
+}
+h1, h2 {
+    margin: 0px;
+    text-align: center;
+    font-family: "Baskervville SC", serif;
+    font-weight: 800;
+    color: #FFFFFF;
+}
+p, .label {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color: #FFFFFF;
+    font-size: 1em;
+}
+
+a {
+    color: lightblue;
+}
+
+.container {
+    height: 100vh;
+    width: 100vw;
+    padding: 10px;
+    gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 2.25em max-content max-content auto;
+}
+
+.title {
+    font-size: 1.5em;
+    vertical-align: top;
+}
+
+.subtitleCont {
+    font-size: 1.2em;
+    padding: 10px;
+    height: max-content;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    align-items: center;
+}
+
+.sub {
+    height: auto;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    gap: 10px;
+    padding: 10px;
+    align-items: center;
+    margin-left:10px;
+    margin-right:10px;
+}
+
+.picrew {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 60%;
+}
+
+.sidebar > p {
+    text-align: center;
+}
+
+.count {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    gap: 10px;
+    padding: 10px;
+    height: max-content;
+    width: max-content;
+    color: ffffff;
+    background-color: 420420;
+    margin-left:auto;
+    margin-right:auto;
+}
+.label {
+    text-align: right;
+}
+
+.increment {
+    align-items: left;
+}
+
+.aside {
+    margin-left: 10%;
+    margin-right: 10%;
+    font-style: italic;
+}
+
+.footer {
+    text-align: center;
+}
+
+.sig {
+    font-family: "Pacifico", cursive !important;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1.5em;
+}
+
+.announce {
+    font-family: "Baskervville SC", cursive !important;
+    font-weight: 600;
+}
