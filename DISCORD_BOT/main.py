@@ -233,6 +233,7 @@ async def blogUpdate(self):
 	allposts = cur.fetchall()
 
 	postbody = []
+
 	for post in allposts:
 		postbody.append(f"<a href=\"{post[0]}\"><h3 class=\"postTitle\">{post[1]}</h3></a>\n")
 		publishdate = datetime.strptime(post[2], "%Y-%m-%d").date()
@@ -255,9 +256,9 @@ async def blogUpdate(self):
 	html += postbody
 	html += aft	
 	#Writes to file
-	with open(tmpDir + pathDelim + "index.html", 'w') as postIndex:
+	with open(tmpDir + pathDelim + "index.html", 'w', encoding="UTF-8") as postIndex:
 		for lin in html:
-			postIndex.write(lin)
+			postIndex.write(lin + "\n")
 		postIndex.close()
 
 	# Copies temp back into live folders & removes temp
