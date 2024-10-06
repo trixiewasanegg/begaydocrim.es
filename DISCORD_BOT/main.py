@@ -1,3 +1,4 @@
+# Imports
 import logging
 import discord
 from dotenv import load_dotenv
@@ -146,29 +147,35 @@ async def blogUpdate(self):
 		try:
 			title = value[key.index("Title")]
 			slug = value[key.index("Slug")]
+			slugs.add(slug)
 			publishDate = value[key.index("Published")]
+			tags = value[key.index("Tags")].split(', ')
 		except:
-			await logToChannel(self, message, "Key not found. Ensure message includes Title, Slug, and Published separated by ': ' only.")
+			await logToChannel(self, message, "Key not found. Ensure message includes Title, Slug, PublishDate, and Tags separated by ': ' only. Tags are to be separated by commas.")
 		
+		fullPath = postsDir + pathDelim + slug
+
 		# Checks if publish date after today
 		publish = datetime.strptime(publishDate, "%d/%m/%Y").date()
 		now = datetime.now().date()
 		if publish > now:
 			continue
 
-		# Converts author display name to web-safe slug
-		authorSlug = re.sub(r'[\s]','-', author)
-		authorSlug = re.sub(r'[^A-Za-z0-9\-]','',authorSlug).lower()
-		slugs.add(authorSlug)
+		# Checks if slug already exists, creating a folder if necesary
+		if not slug in dirs:
+			os.mkdir(fullPath)
 
 		# Checks attachment is text and if markdown
-		for attachment in attached:
-			if attachment.content_type.split("/")[0] != 'text':
-				await logToChannel(self, message, "Invalid attachment for blog - must be text")
-			elif attachment.content_type.split("; ")[0].split("/")[1] != "markdown":
-				print("non-markdown")
-			else:
-				print("markdown")
+		attachment = attached[0]
+		if attachment.content_type.split("/")[0] != 'text':
+			await logToChannel(self, message, "Invalid attachment for blog - must be a markdown file")
+		elif attachment.content_type.split("; ")[0].split("/")[1] != "markdown":
+			await logToChannel(self, message, "Invalid attachment for blog - must be a markdown file")
+			# This tests separately to allow for expansion into potentially autoformatting plaintext
+		else:
+			await attachment.save(fp=fullPath + pathDelim + "content.md")
+
+
 
 
 	

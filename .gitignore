@@ -1,5 +1,6 @@
 *.env
 .venv/
 *.log
-PUBLIC_HTML/*.md
+PUBLIC_HTML/assets/*.md
+PUBLIC_HTML/posts/*
 *.sql
