@@ -158,6 +158,7 @@ async def blogUpdate(self):
 	channelData = self.get_channel(channelID)
 
 	# Creates temp posts directory for modification
+	shutil.rmtree(tmpDir,ignore_errors=True)
 	os.mkdir(tmpDir)
 
 	slugs = set()
@@ -215,24 +216,56 @@ async def blogUpdate(self):
 		with open(assetsPath + pathDelim + "posttemplate.html", 'r') as template:
 			html = template.read()
 		
-		valuesToReplace = [("{{title}}",title),("{{author}}",author),("{{publishdate}}",published)]
+		valuesToReplace = [("{{title}}",title),("{{excerpt}}",excerpt),("{{author}}",author),("{{publishdate}}",published)]
 		for value in valuesToReplace:
 			html = html.replace (value[0],value[1])
 		
 		with open(fullPath + pathDelim + "index.html", 'w') as output:
 			output.write(html)
+			output.close()
 
 		sql = f"INSERT INTO posts (ID, title, slug, author, published, excerpt) VALUES ({msgID}, \"{title}\", \"{slug}\", \"{author}\", \"{publish}\", \"{excerpt}\");"
 		cur.execute(sql)
 		con.commit
 	
+	#Selects all posts, generates html for input into file
+	cur.execute("SELECT slug, title, published, author, excerpt FROM posts ORDER BY published DESC")
+	allposts = cur.fetchall()
+
+	postbody = []
+	for post in allposts:
+		postbody.append(f"<a href=\"{post[0]}\"><h3 class=\"postTitle\">{post[1]}</h3></a>\n")
+		publishdate = datetime.strptime(post[2], "%Y-%m-%d").date()
+		publishdate = datetime.strftime(publishdate,"%B %d, %Y")
+		postbody.append(f"<i class=\"postMeta\">Published: {publishdate} by {post[3]}</i>\n")
+		postbody.append(f"<p class=\"postExcerpt\">{post[4]}</p>\n")
+		postbody.append("<hr>\n")
+
+	# Gets template file from assets, splits into 2 arrays
+	with open(assetsPath + pathDelim + "postindex.html", 'r') as postIndex:
+		indexHTML = postIndex.read()
+		lines = indexHTML.split("\n")
+		repl = lines.index("{{REPLACE}}")
+		pre = lines[0:repl]
+		aft = lines[repl+1::]
+
+	# Meges arrays around body text generated
+	html = []
+	html += pre 
+	html += postbody
+	html += aft	
+	#Writes to file
+	with open(tmpDir + pathDelim + "index.html", 'w') as postIndex:
+		for lin in html:
+			postIndex.write(lin)
+		postIndex.close()
+
 	# Copies temp back into live folders & removes temp
 	shutil.rmtree(postsDir)
 	shutil.copytree(tmpDir,postsDir,symlinks=True)
 	shutil.rmtree(tmpDir)
-	cur.execute("SELECT * FROM posts ORDER BY published DESC")
-	allposts = cur.fetchall()
 
+	print("Blog Updated")
 
 async def update(self,msg=0):
 	await dotEnvUpdate()
@@ -253,7 +286,7 @@ async def update(self,msg=0):
 	elif channeltypes[channels.index(msg.channel.id)] == "BL":
 		await blogUpdate(self)
 		updated = updated + 1
-	print(f'Updated {updated} channels')
+	print(f'Updated from {updated} channels')
 
 class MyClient(discord.Client):
 	async def on_ready(self):

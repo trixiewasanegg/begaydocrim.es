@@ -2,7 +2,7 @@
 <head>
     <!-- (c) 2024 - BeGayDoCrim.Es | GNU General Public License v3.0 -->
     
-    <title> {{title}} | BeGayDoCrim.Es  </title>
+    <title> BeGayDoCrim.Es | Trixie's Spot </title>
     <!-- jquery to load common header & head details-->
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script>
@@ -15,17 +15,13 @@
             $("head").append(data);
         });
     </script>
-    <meta name="description" content="{{excerpt}}">
 </head>
-
 <body>
 <div class="container">
-    <div class="header"></div>
-    <div class="postBody">
-        <h1 class="postTitle">{{title}}</h1>
-        <i class="postMeta">{{author}} | {{publishdate}}</i>
-        <zero-md src="./content.md"></zero-md>
-    </div>
+    <div class="header" ></div>
+	<div class="postbody">
+{{REPLACE}}
+	</div>
 </div>
 </body>
 </html>
