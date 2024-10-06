@@ -1,6 +1,8 @@
 *.env
 .venv/
 *.log
+
 PUBLIC_HTML/assets/*.md
-PUBLIC_HTML/posts/*
+PUBLIC_HTML/assets/avatars/*
+*/posts/*
 *.sql

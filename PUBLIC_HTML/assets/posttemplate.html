@@ -2,33 +2,29 @@
 <head>
     <!-- (c) 2024 - BeGayDoCrim.Es | GNU General Public License v3.0 -->
     
-    <title> BeGayDoCrim.Es | Trixie's Spot </title>
+    <title> {{title}} | BeGayDoCrim.Es  </title>
     <!-- jquery to load common header & head details-->
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script>
         
         $(function(){
-            $(".header").load("assets/header.html");
+            $(".header").load("http://localhost/assets/header.html");
         });
 
-        $.get("assets/commonhead.html", function(data){
+        $.get("http://localhost/assets/commonhead.html", function(data){
             $("head").append(data);
         });
     </script>
 </head>
+
 <body>
 <div class="container">
-    <div class="header" ></div>
-    <div class="body">
-        <div class="sidebar">
-            <zero-md src="assets/microMessages.md"></zero-md>
-        </div>
-        <div class="content">
-            <zero-md src="assets/about.md"></zero-md>
-        </div>
+    <div class="header"></div>
+    <div class="postBody">
+        <h1>{{title}}</h1>
+        <i>{{author}} | {{publishdate}}</i>
+        <zero-md src="./content.md"></zero-md>
     </div>
-    
 </div>
-    
 </body>
 </html>

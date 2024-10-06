@@ -7,32 +7,50 @@ import shutil
 import re
 import pytz
 from datetime import datetime
+import sqlite3
 
-# Loads environment file
-load_dotenv()
-token = os.getenv('TOKEN')
-pathDelim = os.getenv('PATHDELIM')
+async def dotEnvUpdate():
+	# Loads environment file
+	load_dotenv()
 
-#Channel Config
-microChannelID = int(os.getenv('MICROCHANNEL'))
-microMD = str(os.getenv('MDPATH')) + pathDelim + "microMessages.md"
-postsDir = str(os.getenv('POSTDIR'))
-blogChannelID = int(os.getenv('BLOGCHANNEL'))
-blogMD = postsDir + pathDelim + "blogMessages.md"
-aboutChannelID = int(os.getenv('ABOUTCHANNEL'))
-aboutMD = str(os.getenv('MDPATH')) + pathDelim + "about.md"
-logChannelID = int(os.getenv('LOGCHANNEL'))
+	# Infrastructure Variables
+	global pathDelim
+	pathDelim = os.getenv('PATHDELIM')
+	global assetsPath
+	assetsPath = str(os.getenv('ASSETSPATH'))
+	global tmpDir
+	tmpDir = str(os.getenv('TMPDIR'))
 
-# Three Channel Types:
-# MB - Microblogging
-# BL - Blogging
-# AB - About
-# List all channels to monitor here, and add a tuple with the channel type and markdown page to update
-channels = [microChannelID, blogChannelID, aboutChannelID]
-channeltypes = ['MB', 'BL', 'AB']
-channelMD = [microMD, blogMD, aboutMD]
+	#Channel Config
+	global microChannelID
+	microChannelID = int(os.getenv('MICROCHANNEL'))
+	global microMD
+	microMD = str(os.getenv('MDPATH')) + pathDelim + "microMessages.md"
+	global postsDir
+	postsDir = str(os.getenv('POSTDIR'))
+	global blogChannelID
+	blogChannelID = int(os.getenv('BLOGCHANNEL'))
+	global blogMD
+	blogMD = postsDir + pathDelim + "blogMessages.md"
+	global aboutChannelID
+	aboutChannelID = int(os.getenv('ABOUTCHANNEL'))
+	global aboutMD
+	aboutMD = str(os.getenv('MDPATH')) + pathDelim + "about.md"
+	global logChannelID
+	logChannelID = int(os.getenv('LOGCHANNEL'))
 
-handler = logging.FileHandler(filename='DiscordBot.log', encoding='utf-8', mode='w')
+
+	# Three Channel Types:
+	# MB - Microblogging
+	# BL - Blogging
+	# AB - About
+	# List all channels to monitor here, and add a tuple with the channel type and markdown page to update
+	global channels
+	channels = [microChannelID, blogChannelID, aboutChannelID]
+	global channeltypes
+	channeltypes = ['MB', 'BL', 'AB']
+	global channelMD
+	channelMD = [microMD, blogMD, aboutMD]
 
 async def logToChannel(self, trigger, text):
 	logChannel = self.get_channel(logChannelID,)
@@ -106,10 +124,11 @@ async def aboutUpdate(self):
 	markdownLines.append('<table style="width:100%">')
 	async for message in channelData.history(limit=100):
 		author = message.author.display_name
-		avatar = message.author.avatar.url
+		avatarPath = assetsPath + pathDelim + "avatars" + pathDelim + author + ".png"
+		await message.author.avatar.save(fp=avatarPath)
 		content = message.clean_content
 		markdownLines.append("<tr>")
-		markdownLines.append(f'<td style="width:30%"><img src="{avatar}" max-width="400" alt="{author}display image"></td>')
+		markdownLines.append(f'<td style="width:30%"><img src="assets/avatars/{author}.png" max-width="400" alt="{author} display image"></td>')
 		markdownLines.append(f'<td style="width:70%"><h3>{author}</h3><br />{content}</td>')
 		markdownLines.append("</tr>")
 	markdownLines.append("</table>")
@@ -117,6 +136,15 @@ async def aboutUpdate(self):
 	print("About Updated")
 
 async def blogUpdate(self):
+	# Connects to local SQLite DB, checks if posts table exists, creates if it doesn't.
+	con = sqlite3.connect("posts.db")
+	cur = con.cursor()
+	tbl = cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
+	if len(tbl.fetchall()) == 0:
+		cur.execute("CREATE TABLE posts (ID, title, slug, author, published, excerpt);")
+		con.commit()
+		print("Created table")
+
 	# Gets current list of directories in post directories
 	dirs = set()
 	for root, dir, files in os.walk(postsDir):
@@ -129,10 +157,14 @@ async def blogUpdate(self):
 	markdownPath = channelMD[channeltypes.index('BL')]
 	channelData = self.get_channel(channelID)
 
+	# Creates temp posts directory for modification
+	os.mkdir(tmpDir)
+
 	slugs = set()
 	async for message in channelData.history(limit=100):
 		# Pulls metadata from message
 		author = message.author.display_name
+		msgID = message.id
 		avatar = message.author.avatar.url
 		content = message.clean_content
 		attached = message.attachments
@@ -149,23 +181,27 @@ async def blogUpdate(self):
 			slug = value[key.index("Slug")]
 			slugs.add(slug)
 			publishDate = value[key.index("Published")]
-			tags = value[key.index("Tags")].split(', ')
+			excerpt = value[key.index("Excerpt")]
 		except:
 			await logToChannel(self, message, "Key not found. Ensure message includes Title, Slug, PublishDate, and Tags separated by ': ' only. Tags are to be separated by commas.")
 		
-		fullPath = postsDir + pathDelim + slug
+		fullPath = tmpDir + pathDelim + slug
 
 		# Checks if publish date after today
 		publish = datetime.strptime(publishDate, "%d/%m/%Y").date()
 		now = datetime.now().date()
 		if publish > now:
 			continue
+		published = datetime.strftime(publish,"%B %d, %Y")
 
-		# Checks if slug already exists, creating a folder if necesary
-		if not slug in dirs:
+		# Creates a folder for the slug
+		try:
 			os.mkdir(fullPath)
+		except:
+			await logToChannel(self, message, "Slug already used.")
+			continue
 
-		# Checks attachment is text and if markdown
+		# Checks attachment is text and if markdown, saves to folder if so
 		attachment = attached[0]
 		if attachment.content_type.split("/")[0] != 'text':
 			await logToChannel(self, message, "Invalid attachment for blog - must be a markdown file")
@@ -175,12 +211,31 @@ async def blogUpdate(self):
 		else:
 			await attachment.save(fp=fullPath + pathDelim + "content.md")
 
+		# Pulls posttemplate file from assets into memory, makes changes, writes as index
+		with open(assetsPath + pathDelim + "posttemplate.html", 'r') as template:
+			html = template.read()
+		
+		valuesToReplace = [("{{title}}",title),("{{author}}",author),("{{publishdate}}",published)]
+		for value in valuesToReplace:
+			html = html.replace (value[0],value[1])
+		
+		with open(fullPath + pathDelim + "index.html", 'w') as output:
+			output.write(html)
 
-
-
+		sql = f"INSERT INTO posts (ID, title, slug, author, published, excerpt) VALUES ({msgID}, \"{title}\", \"{slug}\", \"{author}\", \"{publish}\", \"{excerpt}\");"
+		cur.execute(sql)
+		con.commit
 	
+	# Copies temp back into live folders & removes temp
+	shutil.rmtree(postsDir)
+	shutil.copytree(tmpDir,postsDir,symlinks=True)
+	shutil.rmtree(tmpDir)
+	cur.execute("SELECT * FROM posts ORDER BY published DESC")
+	allposts = cur.fetchall()
+
 
 async def update(self,msg=0):
+	await dotEnvUpdate()
 	updated = 0
 	if msg == 0:
 		await microblogUpdate(self)
@@ -216,6 +271,10 @@ class MyClient(discord.Client):
 	async def on_member_update(self,before,after):
 		await update(self)
 
+#Load token for bot from .env & define handler
+load_dotenv()
+token = os.getenv('TOKEN')
+handler = logging.FileHandler(filename='DiscordBot.log', encoding='utf-8', mode='w')
 
 intents = discord.Intents.default()
 intents.message_content = True
