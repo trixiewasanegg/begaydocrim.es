@@ -38,19 +38,22 @@ async def dotEnvUpdate():
 	aboutMD = str(os.getenv('MDPATH')) + pathDelim + "about.md"
 	global logChannelID
 	logChannelID = int(os.getenv('LOGCHANNEL'))
+	global assetChannelID
+	assetChannelID = int(os.getenv('ASSETCHANNEL'))
 
 
 	# Three Channel Types:
 	# MB - Microblogging
 	# BL - Blogging
 	# AB - About
-	# List all channels to monitor here, and add a tuple with the channel type and markdown page to update
+	# AS - Assets
+	# List all channels to monitor here
 	global channels
-	channels = [microChannelID, blogChannelID, aboutChannelID]
+	channels = [microChannelID, blogChannelID, aboutChannelID, assetChannelID]
 	global channeltypes
-	channeltypes = ['MB', 'BL', 'AB']
+	channeltypes = ['MB', 'BL', 'AB', 'AS']
 	global channelMD
-	channelMD = [microMD, blogMD, aboutMD]
+	channelMD = [microMD, blogMD, aboutMD, ""]
 
 async def logToChannel(self, trigger, text):
 	logChannel = self.get_channel(logChannelID,)
@@ -268,6 +271,18 @@ async def blogUpdate(self):
 
 	print("Blog Updated")
 
+async def assetUpdate(self):
+	channelID = channels[channeltypes.index('AS')]
+	channelData = self.get_channel(channelID)
+
+	async for message in channelData.history():
+		attachment = message.attachments[0]
+		fullPath = assetsPath + pathDelim + message.clean_content + "." + attachment.content_type.split("/")[1]
+		if not os.path.exists(fullPath):
+			await attachment.save(fp=fullPath)
+	
+	print("Assets Updated")
+	
 async def update(self,msg=0):
 	await dotEnvUpdate()
 	updated = 0
@@ -278,6 +293,8 @@ async def update(self,msg=0):
 		updated = updated + 1
 		await blogUpdate(self)
 		updated = updated + 1
+		await assetUpdate(self)
+		updated = updated + 1
 	elif channeltypes[channels.index(msg.channel.id)] == "MB":
 		await microblogUpdate(self)
 		updated = updated + 1
@@ -286,6 +303,9 @@ async def update(self,msg=0):
 		updated = updated + 1
 	elif channeltypes[channels.index(msg.channel.id)] == "BL":
 		await blogUpdate(self)
+		updated = updated + 1
+	elif channeltypes[channels.index(msg.channel.id)] == "AS":
+		await assetUpdate(self)
 		updated = updated + 1
 	print(f'Updated from {updated} channels')
 
