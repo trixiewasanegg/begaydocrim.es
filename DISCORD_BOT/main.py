@@ -238,12 +238,11 @@ async def blogUpdate(self):
 	postbody = []
 
 	for post in allposts:
-		postbody.append(f"<a href=\"{post[0]}\"><h3 class=\"postTitle\">{post[1]}</h3></a>\n")
 		publishdate = datetime.strptime(post[2], "%Y-%m-%d").date()
 		publishdate = datetime.strftime(publishdate,"%B %d, %Y")
-		postbody.append(f"<i class=\"postMeta\">Published: {publishdate} by {post[3]}</i>\n")
-		postbody.append(f"<p class=\"postExcerpt\">{post[4]}</p>\n")
-		postbody.append("<hr>\n")
+		postbody.append("<div class=\"post\">\n")
+		postbody.append(f"<div class=\"posttitle\"><a href=\"{post[0]}\"><h2>{post[1]}</h2></a><i>Published: {publishdate} by {post[3]}</i></div>\n")
+		postbody.append(f"<div class=\"postexcerpt\"><p>{post[4]}</p></div>\n</div>\n")
 
 	# Gets template file from assets, splits into 2 arrays
 	with open(assetsPath + pathDelim + "postindex.html", 'r') as postIndex:

@@ -1,54 +1,113 @@
 body {
- overflow: hidden;
+    overflow: hidden;
+    background-color: #FFD1DC;
+    font-family: "Raleway", sans-serif;
 }
 
 zero-md {
     padding: 10px;
-    background-color: #ffffff;
 }
 
 .container {
     height: 100vh;
     width: 100vw;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: fit-content auto;
-    background-color: #EEEEEE;
+    background-color: #FFD1DC;
 }
 
 .body {
- display: grid;
- grid-template-columns: 1fr 4fr;
- overflow: hidden;
+    display: grid;
+    width: calc(100vw - 20px);
+    height: 100%;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+    gap: 10px;
+    padding: 10px 0px 10px 0px;
 }
 .sidebar {
-    background-color: #FFFFFF;
+    background-color: #FFFFFF; /* Define better colors */
 }
-.content, .sidebar {
- overflow-y: scroll;
- padding: 20px;
- -ms-overflow-style: none;  /* IE and Edge */
- scrollbar-width: none;  /* Firefox */
+.content {
+    background-color: #EEEEEE; /* Define better colors */
 }
+.content, .sidebar, .postBody, .postbody {
+    overflow-y: auto;
+    height: 100%;
+    padding: 0px 10px 0px 10px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 .navBar {
     display: grid;
     grid-template-columns: auto auto auto;
     max-height: fit-content;
+    max-width: calc(100vw - 40px);
     gap: 10px;
     padding: 10px;
-    background-color: #EEEEEE;
+    background-color: #696969;
 }
 .navBar > div {
     background-color: #FFFFFF;
     padding: 10px;
     text-align: center;
 }
+.navBar > div > p {
+    font-size: 1.25em;
+    margin: 0px;
+}
+h1, h2 {
+    font-size: 2em;
+    margin: 0px;
+    font-family: "Pacifico", cursive;
+    font-style: normal;
+    font-weight: 400;
+}
 .title {
     text-align: center;
 }
-h1, h2 {
+.title > h1 {
+    font-size: 4em;
+}
+
+.postbody {
+    display: grid;
+    width: calc(100vw - 20px);
+    overflow: hidden;
+    gap: 10px;
+    padding: 10px 0px 10px 0px;
+}
+
+.post {
+    display: grid;
+    height: fit-content;
+    padding: 10px;
+    background-color: #FFFFFF;
+    grid-template-columns: 2fr 3fr;
+}
+
+.post > .posttitle {
+    padding: 0px 0px 0px 5%;
+}
+
+.postexcerpt {
+    display:flex;
+    align-items: center;
+    height: 100%;
+}
+
+.postBody {
+    padding: 10px 0px 0px 0px;
+}
+
+.postmeta {
     margin: 0px;
     text-align: center;
-    font-family: "Baskervville SC", serif;
+    background-color: antiquewhite;
+    width: calc(100vw - 20px);
+}
+
+.postBody > zero-md {
+    background-color: #FFFFFF;
+    width: calc(100vw - 40px);
 }
