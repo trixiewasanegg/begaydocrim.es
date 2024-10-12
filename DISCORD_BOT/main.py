@@ -129,11 +129,12 @@ async def aboutUpdate(self):
 	async for message in channelData.history(limit=100):
 		author = message.author.display_name
 		avatarPath = assetsPath + pathDelim + "avatars" + pathDelim + author + ".png"
-		await message.author.avatar.save(fp=avatarPath)
+		attachment = message.attachments[0]
+		await attachment.save(fp=avatarPath)
 		content = message.clean_content
 		markdownLines.append("<tr>")
-		markdownLines.append(f'<td style="width:30%"><img src="assets/avatars/{author}.png" max-width="400" alt="{author} display image"></td>')
-		markdownLines.append(f'<td style="width:70%"><h3>{author}</h3><br />{content}</td>')
+		markdownLines.append(f'<td style="width:30%"><img src="assets/avatars/{author}.png" class="prof-img" alt="{author} display image"></td>')
+		markdownLines.append(f'<td style="width:70%" class="prof-desc"><h3>{author}</h3><br />{content}</td>')
 		markdownLines.append("</tr>")
 	markdownLines.append("</table>")
 	await writeTo(markdownPath, markdownLines)

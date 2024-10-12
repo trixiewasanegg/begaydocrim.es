@@ -12,6 +12,7 @@
         
         $(function(){
             $(".header").load("assets/header.html");
+            $(".footer").load("assets/footer.html");
         });
 
         $.get("assets/commonhead.html", function(data){
@@ -21,7 +22,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="header" ></div>
+    <div class="header"></div>
     <div class="body">
         <div class="sidebar">
             <md-block src="assets/microMessages.md"></md-block>
@@ -30,6 +31,7 @@
             <md-block src="assets/about.md"></md-block>
         </div>
     </div>
+    <div class="footer"></div>
 </div>
     
 </body>

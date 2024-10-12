@@ -11,10 +11,11 @@
     <script>
         
         $(function(){
-            $(".header").load("http://localhost/assets/header.html");
+            $(".header").load("/assets/header.html");
+            $(".footer").load("/assets/header.html");
         });
 
-        $.get("http://localhost/assets/commonhead.html", function(data){
+        $.get("/assets/commonhead.html", function(data){
             $("head").append(data);
         });
     </script>
@@ -25,6 +26,7 @@
 	<div class="postindex">
 {{REPLACE}}
 	</div>
+    <div class="footer"></div>
 </div>
 </body>
 </html>

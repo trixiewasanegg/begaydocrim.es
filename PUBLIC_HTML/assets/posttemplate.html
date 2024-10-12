@@ -11,10 +11,11 @@
     <script>
         
         $(function(){
-            $(".header").load("http://localhost/assets/header.html");
+            $(".header").load("/assets/header.html");
+            $(".footer").load("/assets/footer.html");
         });
 
-        $.get("http://localhost/assets/commonhead.html", function(data){
+        $.get("/assets/commonhead.html", function(data){
             $("head").append(data);
         });
     </script>
@@ -25,10 +26,19 @@
 <div class="container">
     <div class="header"></div>
     <div class="postBody">
-        <div class="postmeta"><hr><h1 class="posttitle">{{title}}</h1>
-        <i>{{author}} | {{publishdate}}</i> <hr></div>
+        <div class="postmeta">
+        <hr>
+        <div>
+            <h1 class="posttitle">{{title}}</h1>
+            <i>{{author}} | {{publishdate}}</i> 
+        </div>
+        <hr>
+        </div>
+        <div class="postcontent">
         <md-block src="./content.md"></zero-md>
+        </div>
     </div>
+    <div class="footer"></div>
 </div>
 </body>
 </html>

@@ -9,8 +9,9 @@
     --contentWidth: calc(100vw - var(--padding) * 4);
     --mainColor: #FFD1DC;
     --light-contrast: #FFFFFF;
+    --light-alt: antiquewhite;
     --dark-contrast: #696969;
-    --ordFont: "Raleway", sans-serif;
+    --ordFont: "Roboto", sans-serif;
     --titleFont: "Pacifico", cursive;
     --font-size: 
 }
@@ -20,20 +21,11 @@ body {
     background-color: var(--mainColor);
     font-family: var(--ordFont);
     margin: var(--padding);
+    height: 100%;
 }
 
 .container {
     width: var(--contentWidth);
-}
-
-.body {
-    display: grid;
-    height: 100%;
-    grid-template-columns: 1fr 4fr;
-    grid-template-rows: 1fr;
-    overflow: hidden;
-    gap: var(--padding);
-    padding: var(--padding) 0px var(--padding) 0px;
 }
 
 /* H1/2 */
@@ -58,29 +50,50 @@ img {
     height: 50vh;
 }
 
+table {
+    width: 100%;
+}
+
 /*
-        HEADER STYLES
+        TABLE STYLES
 ===========================================================================================================================================================
 */
 
-.navBar {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    max-height: fit-content;
+.borderless {
+    max-width: 100%;
+    border: 0;
+}
+
+/*
+        HEADER/FOOTER STYLES
+===========================================================================================================================================================
+*/
+
+.footer, .navBar {
     gap: var(--padding);
     padding: var(--padding);
     background-color: var(--dark-contrast);
+    max-height: fit-content;
 }
 
-.navBar > div {
+.footer p{
+    margin: 0px;
+}
+
+.navBar div, .footer p {
     background-color: var(--light-contrast);
     padding: var(--padding);
     text-align: center;
 }
 
-.navBar > div > p {
+.navBar p {
     font-size: 1.25em;
     margin: 0px;
+}
+
+.navBar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .title {
@@ -98,18 +111,44 @@ img {
 ===========================================================================================================================================================
 */
 
+.body {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+    gap: var(--padding);
+    padding: var(--padding) 0px var(--padding) 0px;
+}
+
 .sidebar {
-    background-color: #FFFFFF; /* Define better colors */
+    background-color: var(--light-contrast); /* Define better colors */
 }
 .content {
-    background-color: #EEEEEE; /* Define better colors */
+    background-color: var(--light-contrast); /* Define better colors */
 }
-.content, .sidebar, .postindex {
+
+.content, .sidebar {
+    display: flex;
     overflow-y: auto;
     height: 100%;
-    padding: 0px 10px 0px 10px;
+    padding: 0px var(--padding) 0px var(--padding);
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+}
+
+.prof-img {
+    height: 40vh;
+    width: auto;
+    padding-bottom: calc(var(--padding) * 2);
+}
+
+.prof-desc {
+    vertical-align: top;
+}
+
+.prof-desc h3 {
+    font-size: 2em;
 }
 
 /*
@@ -126,7 +165,7 @@ img {
     display: grid;
     height: fit-content;
     padding: var(--padding);
-    background-color: #FFFFFF;
+    background-color: var(--light-contrast);
     grid-template-columns: 2fr 3fr;
 }
 
@@ -144,7 +183,11 @@ img {
     margin: 0px;
     width: 100%;
     text-align: center;
-    background-color: antiquewhite;
+    background-color: var(--light-alt);
+}
+
+.postmeta > div {
+    padding: calc(var(--padding) *2);
 }
 
 .postBody {
@@ -171,23 +214,11 @@ md-block h2 {
     padding: var(--padding) calc(var(--padding) * 2) ;
 }
 
-/*
-        TABLE STYLES
-===========================================================================================================================================================
-*/
-
-.borderless {
-    max-width: 100%;
-    border: 0;
+md-block blockquote {
+    font-weight: 300;
 }
 
-div.twoUp {
-	max-width: 50%;
-	border: 0;
-	display: flex;
-	align-items: center;
-}
-
-img.twoUp {
-	padding: 0px calc(var(--padding) * 4) 0px calc(var(--padding) * 4);
+md-block blockquote br {
+    display: block;
+    margin-bottom: calc(var(--padding) *3);
 }
