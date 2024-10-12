@@ -18,6 +18,8 @@ async def dotEnvUpdate():
 	pathDelim = os.getenv('PATHDELIM')
 	global assetsPath
 	assetsPath = str(os.getenv('ASSETSPATH'))
+	global uploadPath
+	uploadPath = assetsPath + pathDelim + "upload"
 	global tmpDir
 	tmpDir = str(os.getenv('TMPDIR'))
 
@@ -40,7 +42,6 @@ async def dotEnvUpdate():
 	logChannelID = int(os.getenv('LOGCHANNEL'))
 	global assetChannelID
 	assetChannelID = int(os.getenv('ASSETCHANNEL'))
-
 
 	# Three Channel Types:
 	# MB - Microblogging
@@ -274,11 +275,20 @@ async def assetUpdate(self):
 	channelID = channels[channeltypes.index('AS')]
 	channelData = self.get_channel(channelID)
 
+	uploads = []
 	async for message in channelData.history():
 		attachment = message.attachments[0]
-		fullPath = assetsPath + pathDelim + message.clean_content + "." + attachment.content_type.split("/")[1]
+		fileName = message.clean_content + "." + attachment.content_type.split("/")[1]
+		fullPath = uploadPath + pathDelim + fileName
 		if not os.path.exists(fullPath):
 			await attachment.save(fp=fullPath)
+
+		uploads.append(fileName)
+	
+	files = os.listdir(uploadPath)
+	for file in files:
+		if file not in uploads:
+			os.remove(uploadPath + pathDelim + file)
 	
 	print("Assets Updated")
 	

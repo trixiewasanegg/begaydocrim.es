@@ -6,3 +6,6 @@
 PUBLIC_HTML/assets/*.md
 PUBLIC_HTML/assets/avatars/*
 */blog/*
+
+*.png
+*.webp

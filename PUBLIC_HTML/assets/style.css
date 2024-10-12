@@ -1,36 +1,110 @@
-body {
-    overflow: hidden;
-    background-color: #FFD1DC;
-    font-family: "Raleway", sans-serif;
+/*
+        GLOBAL STYLES
+===========================================================================================================================================================
+*/
+
+/* Variables */
+:root {
+    --padding: 0.5vw;
+    --contentWidth: calc(100vw - var(--padding) * 4);
+    --mainColor: #FFD1DC;
+    --light-contrast: #FFFFFF;
+    --dark-contrast: #696969;
+    --ordFont: "Raleway", sans-serif;
+    --titleFont: "Pacifico", cursive;
+    --font-size: 
 }
 
-zero-md {
-    padding: 10px;
+/* Body Calcs */
+body {
+    background-color: var(--mainColor);
+    font-family: var(--ordFont);
+    margin: var(--padding);
 }
 
 .container {
-    height: 100vh;
-    width: 100vw;
-    background-color: #FFD1DC;
+    width: var(--contentWidth);
 }
 
 .body {
     display: grid;
-    width: calc(100vw - 20px);
     height: 100%;
     grid-template-columns: 1fr 4fr;
     grid-template-rows: 1fr;
     overflow: hidden;
-    gap: 10px;
-    padding: 10px 0px 10px 0px;
+    gap: var(--padding);
+    padding: var(--padding) 0px var(--padding) 0px;
 }
+
+/* H1/2 */
+h1, h2 {
+    font-family: var(--titleFont);
+    margin: 0px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+img {
+    display: block;
+    margin: auto;
+    height: 50vh;
+}
+
+/*
+        HEADER STYLES
+===========================================================================================================================================================
+*/
+
+.navBar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    max-height: fit-content;
+    gap: var(--padding);
+    padding: var(--padding);
+    background-color: var(--dark-contrast);
+}
+
+.navBar > div {
+    background-color: var(--light-contrast);
+    padding: var(--padding);
+    text-align: center;
+}
+
+.navBar > div > p {
+    font-size: 1.25em;
+    margin: 0px;
+}
+
+.title {
+    text-align: center;
+    margin: var(--padding);
+    font-size: 1.25em;
+}
+
+.title > h1 {
+    font-size: 4em;
+}
+
+/*
+        HOMEPAGE STYLES
+===========================================================================================================================================================
+*/
+
 .sidebar {
     background-color: #FFFFFF; /* Define better colors */
 }
 .content {
     background-color: #EEEEEE; /* Define better colors */
 }
-.content, .sidebar, .postBody, .postbody {
+.content, .sidebar, .postindex {
     overflow-y: auto;
     height: 100%;
     padding: 0px 10px 0px 10px;
@@ -38,50 +112,20 @@ zero-md {
     scrollbar-width: none;  /* Firefox */
 }
 
-.navBar {
+/*
+        POSTINDEX STYLES
+===========================================================================================================================================================
+*/
+.postindex {
     display: grid;
-    grid-template-columns: auto auto auto;
-    max-height: fit-content;
-    max-width: calc(100vw - 40px);
-    gap: 10px;
-    padding: 10px;
-    background-color: #696969;
-}
-.navBar > div {
-    background-color: #FFFFFF;
-    padding: 10px;
-    text-align: center;
-}
-.navBar > div > p {
-    font-size: 1.25em;
-    margin: 0px;
-}
-h1, h2 {
-    font-size: 2em;
-    margin: 0px;
-    font-family: "Pacifico", cursive;
-    font-style: normal;
-    font-weight: 400;
-}
-.title {
-    text-align: center;
-}
-.title > h1 {
-    font-size: 4em;
-}
-
-.postbody {
-    display: grid;
-    width: calc(100vw - 20px);
-    overflow: hidden;
-    gap: 10px;
-    padding: 10px 0px 10px 0px;
+    gap: var(--padding);
+    padding: var(--padding) 0px var(--padding) 0px;
 }
 
 .post {
     display: grid;
     height: fit-content;
-    padding: 10px;
+    padding: var(--padding);
     background-color: #FFFFFF;
     grid-template-columns: 2fr 3fr;
 }
@@ -91,23 +135,59 @@ h1, h2 {
 }
 
 .postexcerpt {
-    display:flex;
+    display: flex;
     align-items: center;
     height: 100%;
 }
 
-.postBody {
-    padding: 10px 0px 0px 0px;
-}
-
 .postmeta {
     margin: 0px;
+    width: 100%;
     text-align: center;
     background-color: antiquewhite;
-    width: calc(100vw - 20px);
 }
 
-.postBody > zero-md {
-    background-color: #FFFFFF;
-    width: calc(100vw - 40px);
+.postBody {
+    margin: var(--padding) 0px 0px 0px;
+    background-color: var(--light-contrast);
+}
+
+.postmeta hr {
+    margin: 0px
+}
+
+/*
+        MARKDOWN STYLES
+===========================================================================================================================================================
+*/
+md-block h2 {
+    font-family: var(--ordFont);
+    text-align: left;
+    margin-top: var(--padding);
+    margin-bottom: var(--padding);
+}
+
+.postcontent {
+    padding: var(--padding) calc(var(--padding) * 2) ;
+}
+
+/*
+        TABLE STYLES
+===========================================================================================================================================================
+*/
+
+.borderless {
+    max-width: 100%;
+    border: 0;
+}
+
+div.twoUp {
+	max-width: 50%;
+	border: 0;
+	display: flex;
+	align-items: center;
+}
+
+img.twoUp {
+	padding: 0px calc(var(--padding) * 4) 0px calc(var(--padding) * 4);
 }
