@@ -1,0 +1,10 @@
+[Unit]
+Description=Discord bot controlling the CMS
+
+[Service]
+User=trixie
+ExecStart=/usr/bin/python3 /home/trixie/begaydocrim.es/bot/main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
