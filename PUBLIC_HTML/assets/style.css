@@ -13,7 +13,7 @@
     --dark-contrast: #696969;
     --ordFont: "Roboto", sans-serif;
     --titleFont: "Pacifico", cursive;
-    --font-size: 
+    --font-size: 1.25vh;
 }
 
 /* Body Calcs */
@@ -106,12 +106,20 @@ table {
     font-size: 4em;
 }
 
+/* Reformat for small screen */
+
+@media screen and (max-width: 600px) {
+    .title > h1 {
+        font-size: 10vw;
+    }
+}
+
 /*
         HOMEPAGE STYLES
 ===========================================================================================================================================================
 */
 
-.body {
+.homebody {
     display: grid;
     height: 100%;
     grid-template-columns: 1fr 4fr;
@@ -121,24 +129,51 @@ table {
     padding: var(--padding) 0px var(--padding) 0px;
 }
 
-.sidebar {
-    background-color: var(--light-contrast); /* Define better colors */
+.homebody h1 {
+    font-family: var(--ordFont);
+    font-size: 5vw;
 }
+
 .content {
-    background-color: var(--light-contrast); /* Define better colors */
+    display: flex;
+}
+
+.sidebar {
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: 5fr 45fr;
 }
 
 .content, .sidebar {
-    display: flex;
-    overflow-y: auto;
-    height: 100%;
+    background-color: var(--light-contrast);
+    height: 50vh;
+    min-height: 400px;
     padding: 0px var(--padding) 0px var(--padding);
+}
+
+.microMsgTitle {
+    font-size: auto;
+    text-align: center;
+    height: fit-content;
+}
+
+.microMsgContainer {
+    overflow: hidden;
+    flex-direction: column;
+    height: 100%;
+}
+
+.microMsgScroll {
+    overflow-y: auto;
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
 
 .prof-img {
-    height: 40vh;
+    height: 30vh;
     width: auto;
     padding-bottom: calc(var(--padding) * 2);
 }
@@ -149,6 +184,26 @@ table {
 
 .prof-desc h3 {
     font-size: 2em;
+}
+
+/* Reformat for small screen */
+
+@media screen and (max-width: 600px) {
+    /* Reorder grid to columns */
+    .homebody {display: flex; flex-flow: column; overflow: scroll;}
+    .content {order: 1; max-height: fit-content;}
+    .sidebar {order: 2;}
+
+    /* Reformat contributors */
+    .prof-img {
+        width: 30vw;
+        height: auto;
+        padding-bottom: calc(var(--padding) * 2);
+    }
+
+    .content {
+        height: fit-content;
+    }
 }
 
 /*

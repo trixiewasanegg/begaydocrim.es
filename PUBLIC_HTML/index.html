@@ -11,11 +11,11 @@
     <script>
         
         $(function(){
-            $(".header").load("assets/header.html");
-            $(".footer").load("assets/footer.html");
+            $(".header").load("/assets/header.html");
+            $(".footer").load("/assets/footer.html");
         });
 
-        $.get("assets/commonhead.html", function(data){
+        $.get("/assets/commonhead.html", function(data){
             $("head").append(data);
         });
     </script>
@@ -23,12 +23,13 @@
 <body>
 <div class="container">
     <div class="header"></div>
-    <div class="body">
+    <div class="homebody">
         <div class="sidebar">
-            <md-block src="assets/microMessages.md"></md-block>
+            <div class="microMsgTitle"><h1>Random Thoughts</h1><hr></div>
+            <div class="microMsgContainer"><div class="microMsgScroll"><md-block src="/assets/microMessages.md"></md-block></div></div>
         </div>
         <div class="content">
-            <md-block src="assets/about.md"></md-block>
+            <md-block src="/assets/about.md"></md-block>
         </div>
     </div>
     <div class="footer"></div>
