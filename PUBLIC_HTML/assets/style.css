@@ -50,10 +50,6 @@ img {
     height: 50vh;
 }
 
-table {
-    width: 100%;
-}
-
 /*
         TABLE STYLES
 ===========================================================================================================================================================
@@ -62,6 +58,17 @@ table {
 .borderless {
     max-width: 100%;
     border: 0;
+}
+
+.twoUp {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+@media screen and (max-width: 600px) {
+    .stack {display: flex; flex-flow: column; overflow: scroll;}
+    .stack > .first {order: 1; max-height: fit-content;}
+    .stack > .second {order: 2;}
 }
 
 /*
@@ -131,7 +138,14 @@ table {
 
 .homebody h1 {
     font-family: var(--ordFont);
-    font-size: 5vw;
+}
+
+.content h1 {
+    font-size: 3vw;
+}
+
+.sidebar h1 {
+    font-size: 2vw;
 }
 
 .content {
