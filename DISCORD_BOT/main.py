@@ -1,11 +1,9 @@
 # Imports
 import logging
 import discord
-from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import shutil
-import re
 import pytz
 from datetime import datetime
 import sqlite3

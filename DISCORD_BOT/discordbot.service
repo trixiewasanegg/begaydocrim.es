@@ -3,7 +3,7 @@ Description=Discord bot controlling the CMS
 
 [Service]
 User=trixie
-ExecStart=/usr/bin/python3 /home/trixie/begaydocrim.es/bot/main.py
+ExecStart=/bin/bash /var/www/begaydocrim.es/bot/botStartup.sh
 Restart=always
 
 [Install]
