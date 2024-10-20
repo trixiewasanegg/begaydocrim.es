@@ -79,8 +79,8 @@ img {
     padding: var(--padding);
 }
 
-.twoUp .imgcenter {
-    width: 45vw;
+.twoUp img {
+    max-width: 90%;
     height:auto;
 }
 
@@ -202,12 +202,13 @@ img {
     display: flex;
     height: 100%;
     flex-grow: 1;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: thin;  /* IE and Edge */
+    scrollbar-width: thin;  /* Firefox */
 }
 
-.microMsgScroll md-block {
+.microMsgScroll md-block, .microMsgScroll img {
     width: 100%;
+    height: auto;
 }
 
 .prof-img {
@@ -237,9 +238,11 @@ img {
     .content {
         height: fit-content;
         font-size: 1.75vh;
+        padding: var(--padding);
     }
     .sidebar {
         font-size: 1.5vh;
+        padding: var(--padding);
     }
 
     .homebody h1 {
@@ -281,6 +284,7 @@ img {
     .post {display: flex; flex-flow: column; overflow: scroll; font-size: 1.5vh; padding: 0 5%;}
     .post > .posttitle {padding: 0; text-align: center;}
 }
+
 /*
         POST STYLES
 ===========================================================================================================================================================
@@ -304,6 +308,11 @@ img {
 
 .postmeta hr {
     margin: 0px
+}
+
+.postcontent {
+    max-width: 1100px;
+    margin: auto;
 }
 
 /*
@@ -341,6 +350,12 @@ md-block blockquote br {
     gap: var(--padding);
 }
 
+.contrib h1 {
+    font-size: 3vh;
+    text-align: center;
+    padding: var(--padding)
+}
+
 .licTxt {
     background-color: var(--light-alt);
     padding: calc(var(--padding) *2);
@@ -353,6 +368,9 @@ md-block blockquote br {
 */
 
 @media screen and (max-width: 600px) {
+    :root {
+        --padding: 0.5vh;
+    }
     .stack {display: flex; flex-flow: column; overflow: scroll;}
     .stack > .first {order: 1; max-height: fit-content;}
     .stack > .second {order: 2;}

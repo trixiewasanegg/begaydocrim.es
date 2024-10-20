@@ -1,14 +1,14 @@
 # Imports
 import logging
 import discord
-from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import shutil
-import re
 import pytz
 from datetime import datetime
 import sqlite3
+import traceback
+from PIL import Image
 
 async def dotEnvUpdate():
 	# Loads environment file
@@ -33,8 +33,6 @@ async def dotEnvUpdate():
 	postsDir = str(os.getenv('POSTDIR'))
 	global blogChannelID
 	blogChannelID = int(os.getenv('BLOGCHANNEL'))
-	global blogMD
-	blogMD = postsDir + pathDelim + "blogMessages.md"
 	global aboutChannelID
 	aboutChannelID = int(os.getenv('ABOUTCHANNEL'))
 	global aboutMD
@@ -55,7 +53,7 @@ async def dotEnvUpdate():
 	global channeltypes
 	channeltypes = ['MB', 'BL', 'AB', 'AS']
 	global channelMD
-	channelMD = [microMD, blogMD, aboutMD, ""]
+	channelMD = [microMD, "", aboutMD, ""]
 
 async def logToChannel(self, trigger, text):
 	logChannel = self.get_channel(logChannelID,)
@@ -70,10 +68,35 @@ async def logToChannel(self, trigger, text):
 	await logChannel.send(message)
 
 async def writeTo(path, lines):
-	file = open(path,"w")
+	file = open(path,"w", encoding="UTF-8")
 	for lin in lines:
 		file.write(f'{lin}\n')
 	file.close()
+
+async def imgDownload(self, attachment, filename, path):
+	# Gets media type
+	mediaTyp = attachment.content_type.split("/")
+
+	tmpFile = path + pathDelim + "tmp" + filename + "." + mediaTyp[1]
+
+	# Generates final file name
+	returnVal = filename + ".webp"
+	finalFile = path + pathDelim + returnVal
+
+	# Downloads to tmp file & compresses if not exists
+	if not os.path.exists(finalFile):
+		await attachment.save(fp=tmpFile)
+		# Opens image with pillow, downsizes to 1000px high, saves as webp
+		with Image.open(tmpFile) as img:
+			ratio = img.size[0] / img.size[1]
+			height = 1000
+			width = height * ratio
+			img.thumbnail([height, width])
+			img.save(finalFile, 'webp')
+			os.remove(tmpFile)
+
+	return returnVal
+
 
 async def microblogUpdate(self):
 	try:
@@ -90,8 +113,7 @@ async def microblogUpdate(self):
 			
 			# Gets message author, avatar, message content, and embeds
 			author = message.author.display_name
-			avatar = message.author.avatar.url
-			content = message.clean_content
+			content = message.clean_content.replace("\n", "<br />")
 			attached = message.attachments
 			embeds = message.embeds
 			# Checks if reply, gets replied message details
@@ -110,17 +132,18 @@ async def microblogUpdate(self):
 			markdownLines.append(content + "\n")
 			for attachment in attached:
 				if attachment.content_type.split("/")[0] == "image":
-					markdownLines.append(f'<img src="{attachment.url}"><br />')
-				if attachment.content_type.split("/")[0] == "video":
-					markdownLines.append(f'<video controls> <source src="{attachment.url}" type={attachment.content_type}> Your browser does not support the video tag. </video><br />')
+					filen = await imgDownload(self, attachment, str(message.id), assetsPath + pathDelim + "micro")
+					markdownLines.append(f'<img src="/assets/micro/{filen}"><br />\n')
 			for embed in embeds:
 				if embed.type == "video" or embed.type == "gifv":
-					markdownLines.append(f'<video controls> <source src="{embed.url}"> Your browser does not support the video tag. </video><br />')
+					markdownLines.append(f'<video controls> <source src="{embed.url}"> Your browser does not support the video tag. </video><br />\n')
 			markdownLines.append("---")
 		await writeTo(markdownPath, markdownLines)
 		print("Microblog Updated")
-	except:
-		await logToChannel(self,"Microblog","Microblog failed to update")		
+	except Exception as f:
+		e = traceback.format_exc()
+		await logToChannel(self,"Microblog","Microblog failed to update with the following exception\n" + e)
+		print(e)		
 
 async def aboutUpdate(self):
 	try:
@@ -133,19 +156,20 @@ async def aboutUpdate(self):
 		markdownLines.append('<table style="width:100%">')
 		async for message in channelData.history(limit=100):
 			author = message.author.display_name
-			avatarPath = assetsPath + pathDelim + "avatars" + pathDelim + author + ".png"
 			attachment = message.attachments[0]
-			await attachment.save(fp=avatarPath)
+			filen = await imgDownload(self, attachment, author, assetsPath + pathDelim + "avatars")
 			content = message.clean_content
 			markdownLines.append("<tr>")
-			markdownLines.append(f'<td style="width:30%"><img src="/assets/avatars/{author}.png" class="prof-img" alt="{author} display image"></td>')
+			markdownLines.append(f'<td style="width:30%"><img src="/assets/avatars/{filen}" class="prof-img" alt="{author} display image"></td>')
 			markdownLines.append(f'<td style="width:70%" class="prof-desc"><h3>{author}</h3><br />{content}</td>')
 			markdownLines.append("</tr>")
 		markdownLines.append("</table>")
 		await writeTo(markdownPath, markdownLines)
 		print("About Updated")
-	except:
-		logToChannel(self, "About Update", "About update failed")
+	except Exception as f:
+		e = traceback.format_exc()
+		logToChannel(self, "About Update", "About failed to update with the following exception\n" + e)
+		print(e)
 
 async def blogUpdate(self):
 	try:
@@ -167,7 +191,6 @@ async def blogUpdate(self):
 				dirs.add(dir)
 		
 		channelID = channels[channeltypes.index('BL')]
-		markdownPath = channelMD[channeltypes.index('BL')]
 		channelData = self.get_channel(channelID)
 
 		# Creates temp posts directory for modification
@@ -179,7 +202,6 @@ async def blogUpdate(self):
 			# Pulls metadata from message
 			author = message.author.display_name
 			msgID = message.id
-			avatar = message.author.avatar.url
 			content = message.clean_content
 			attached = message.attachments
 
@@ -225,6 +247,15 @@ async def blogUpdate(self):
 			else:
 				await attachment.save(fp=fullPath + pathDelim + "content.md")
 
+			with open(fullPath + pathDelim + "content.md", 'r') as markdown:
+				md = markdown.read()
+			
+			valuesToReplace = [(".png",".webp"),(".jpg",".webp"),(".jpeg",".webp")]
+			for value in valuesToReplace:
+				md = md.replace(value[0], value[1])
+			
+			await writeTo(fullPath + pathDelim + "content.md", md.split("\n"))
+
 			# Pulls posttemplate file from assets into memory, makes changes, writes as index
 			with open(assetsPath + pathDelim + "posttemplate.html", 'r') as template:
 				html = template.read()
@@ -233,9 +264,7 @@ async def blogUpdate(self):
 			for value in valuesToReplace:
 				html = html.replace (value[0],value[1])
 			
-			with open(fullPath + pathDelim + "index.html", 'w') as output:
-				output.write(html)
-				output.close()
+			await writeTo(fullPath + pathDelim + "index.html", html.split("\n"))
 
 			sql = f"INSERT INTO posts (ID, title, slug, author, published, excerpt) VALUES ({msgID}, \"{title}\", \"{slug}\", \"{author}\", \"{publish}\", \"{excerpt}\");"
 			cur.execute(sql)
@@ -268,10 +297,7 @@ async def blogUpdate(self):
 		html += postbody
 		html += aft	
 		#Writes to file
-		with open(tmpDir + pathDelim + "index.html", 'w', encoding="UTF-8") as postIndex:
-			for lin in html:
-				postIndex.write(lin + "\n")
-			postIndex.close()
+		await writeTo(tmpDir + pathDelim + "index.html", html)
 
 		# Copies temp back into live folders & removes temp
 		shutil.rmtree(postsDir)
@@ -279,8 +305,10 @@ async def blogUpdate(self):
 		shutil.rmtree(tmpDir)
 
 		print("Blog Updated")
-	except:
-		logToChannel(self, "Blog Update", "Blog failed to update")
+	except Exception as f:
+		e = traceback.format_exc()
+		logToChannel(self, "Blog Update", "Blog failed to update with the following exception\n" + e)
+		print(e)
 
 async def assetUpdate(self):
 	try:
@@ -290,11 +318,14 @@ async def assetUpdate(self):
 		uploads = []
 		async for message in channelData.history():
 			attachment = message.attachments[0]
-			fileName = message.clean_content + "." + attachment.content_type.split("/")[1]
-			fullPath = uploadPath + pathDelim + fileName
-			if not os.path.exists(fullPath):
-				await attachment.save(fp=fullPath)
-
+			contentTyp = attachment.content_type.split("/")
+			if contentTyp[0] == "image":
+				fileName = await imgDownload(self, attachment, message.clean_content, uploadPath)
+			else:
+				fileName = message.clean_content + "." + contentTyp[1]
+				fullPath = uploadPath + pathDelim + fileName
+				if not os.path.exists(fullPath):
+					await attachment.save(fp=fullPath)
 			uploads.append(fileName)
 		
 		files = os.listdir(uploadPath)
@@ -303,8 +334,10 @@ async def assetUpdate(self):
 				os.remove(uploadPath + pathDelim + file)
 		
 		print("Assets Updated")
-	except:
-		logToChannel(self,"Asset update", "Assets failed to update")
+	except Exception as f:
+		e = traceback.format_exc()
+		logToChannel(self,"Asset update", "Assets failed to update with the following exception\n" + e)
+		print(e)
 	
 async def update(self,msg=0):
 	await dotEnvUpdate()
