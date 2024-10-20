@@ -16,8 +16,10 @@ Intended to replace my Wordpress blog [TrixiesManyThoughts.wordpress.com](https:
 ### Back end
 - CMS using a discord server
 - Python Core
+- Libwebp-dev
 - [discord.py](https://github.com/Rapptz/discord.py) for interfacing with the discord server
 - [pytz](https://pypi.org/project/pytz/) for datetime timezone shit
+- [pillow](https://github.com/python-pillow/Pillow) for image compression
 
 ## Installation & Dependencies
 
