@@ -76,7 +76,8 @@ async def writeTo(path, lines):
 async def imgDownload(self, attachment, filename, path):
 	# Gets media type
 	mediaTyp = attachment.content_type.split("/")
-	tmpFile = path + pathDelim + filename + "." + mediaTyp[1]
+
+	tmpFile = path + pathDelim + "tmp" + filename + "." + mediaTyp[1]
 
 	# Generates final file name
 	returnVal = filename + ".webp"
@@ -112,7 +113,7 @@ async def microblogUpdate(self):
 			
 			# Gets message author, avatar, message content, and embeds
 			author = message.author.display_name
-			content = message.clean_content
+			content = message.clean_content.replace("\n", "<br />")
 			attached = message.attachments
 			embeds = message.embeds
 			# Checks if reply, gets replied message details
@@ -246,6 +247,15 @@ async def blogUpdate(self):
 			else:
 				await attachment.save(fp=fullPath + pathDelim + "content.md")
 
+			with open(fullPath + pathDelim + "content.md", 'r') as markdown:
+				md = markdown.read()
+			
+			valuesToReplace = [(".png",".webp"),(".jpg",".webp"),(".jpeg",".webp")]
+			for value in valuesToReplace:
+				md = md.replace(value[0], value[1])
+			
+			await writeTo(fullPath + pathDelim + "content.md", md.split("\n"))
+
 			# Pulls posttemplate file from assets into memory, makes changes, writes as index
 			with open(assetsPath + pathDelim + "posttemplate.html", 'r') as template:
 				html = template.read()
@@ -254,7 +264,7 @@ async def blogUpdate(self):
 			for value in valuesToReplace:
 				html = html.replace (value[0],value[1])
 			
-			await writeTo(fullPath + pathDelim + "index.html", html)
+			await writeTo(fullPath + pathDelim + "index.html", html.split("\n"))
 
 			sql = f"INSERT INTO posts (ID, title, slug, author, published, excerpt) VALUES ({msgID}, \"{title}\", \"{slug}\", \"{author}\", \"{publish}\", \"{excerpt}\");"
 			cur.execute(sql)
@@ -316,7 +326,6 @@ async def assetUpdate(self):
 				fullPath = uploadPath + pathDelim + fileName
 				if not os.path.exists(fullPath):
 					await attachment.save(fp=fullPath)
-
 			uploads.append(fileName)
 		
 		files = os.listdir(uploadPath)
