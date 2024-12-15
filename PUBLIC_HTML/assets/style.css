@@ -120,7 +120,7 @@ img {
 
 .navBar {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 
 .title {
@@ -360,6 +360,61 @@ md-block blockquote br {
     background-color: var(--light-alt);
     padding: calc(var(--padding) *2);
     text-align: center;
+}
+
+/*
+        SOCIAL LINK STYLES
+===========================================================================================================================================================
+*/
+.socials {
+    background-color: var(--light-alt);
+
+    padding: var(--padding);
+
+    .collapsible {
+        background-color: var(--dark-contrast);
+        color: white;
+        width: 100%;
+        cursor: pointer;
+        padding: calc(var(--padding) * 3);
+        border: none;
+        text-align: center;
+        outline: none;
+        font-size: calc(var(--font-size) *3);
+    }
+    .collapse-content {
+        display: none;
+        overflow: hidden;
+        background-color: var(--light-contrast);
+    }
+
+    h1 {
+        text-align: center;
+    }
+    .stack {
+        background-color: var(--light-contrast);
+        padding: var(--padding);
+    }
+
+    .first, .second {
+        height: calc(var(--font-size) * 15);
+    }
+
+    img {
+        max-height: 80%;
+        width: auto;
+    }
+
+    a {
+        text-decoration: none;
+        color: #000000;
+    }
+    
+    @media screen and (max-width: 600px) {
+        div {
+            overflow: hidden;
+        }
+    }
 }
 
 /*

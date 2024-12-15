@@ -17,12 +17,18 @@ async def dotEnvUpdate():
 	# Infrastructure Variables
 	global pathDelim
 	pathDelim = os.getenv('PATHDELIM')
+	global botPath
+	botPath = str(os.getenv('BOTPATH'))
+	global tmpDir
+	tmpDir = botPath + pathDelim + "tmpdir"
+	global sqlLiteDB
+	sqlLiteDB = botPath + pathDelim + str(os.getenv('SQLITEDB'))
+	global htmlDir
+	htmlDir = str(os.getenv('HTMLPATH'))
 	global assetsPath
-	assetsPath = str(os.getenv('ASSETSPATH'))
+	assetsPath = htmlDir + pathDelim + "assets"
 	global uploadPath
 	uploadPath = assetsPath + pathDelim + "upload"
-	global tmpDir
-	tmpDir = str(os.getenv('TMPDIR'))
 
 	#Channel Config
 	global microChannelID
@@ -41,19 +47,24 @@ async def dotEnvUpdate():
 	logChannelID = int(os.getenv('LOGCHANNEL'))
 	global assetChannelID
 	assetChannelID = int(os.getenv('ASSETCHANNEL'))
+	global socialChannelID
+	socialChannelID = int(os.getenv('SOCIALCHANNEL'))
+	global socialMD
+	socialMD = str(os.getenv('MDPATH')) + pathDelim + "socials.md"
 
 	# Three Channel Types:
 	# MB - Microblogging
 	# BL - Blogging
 	# AB - About
 	# AS - Assets
+	# SC - Social Media Accounts
 	# List all channels to monitor here
 	global channels
-	channels = [microChannelID, blogChannelID, aboutChannelID, assetChannelID]
+	channels = [microChannelID, blogChannelID, aboutChannelID, assetChannelID, socialChannelID]
 	global channeltypes
-	channeltypes = ['MB', 'BL', 'AB', 'AS']
+	channeltypes = ['MB', 'BL', 'AB', 'AS', 'SC']
 	global channelMD
-	channelMD = [microMD, "", aboutMD, ""]
+	channelMD = [microMD, "", aboutMD, "", socialMD]
 
 async def logToChannel(self, trigger, text):
 	logChannel = self.get_channel(logChannelID,)
@@ -96,7 +107,6 @@ async def imgDownload(self, attachment, filename, path):
 			os.remove(tmpFile)
 
 	return returnVal
-
 
 async def microblogUpdate(self):
 	try:
@@ -168,13 +178,13 @@ async def aboutUpdate(self):
 		print("About Updated")
 	except Exception as f:
 		e = traceback.format_exc()
-		logToChannel(self, "About Update", "About failed to update with the following exception\n" + e)
+		await logToChannel(self, "About Update", "About failed to update with the following exception\n" + e)
 		print(e)
 
 async def blogUpdate(self):
 	try:
 		# Connects to local SQLite DB, checks if posts table exists, creates if it doesn't.
-		con = sqlite3.connect("posts.db")
+		con = sqlite3.connect(sqlLiteDB)
 		cur = con.cursor()
 		tbl = cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
 		if len(tbl.fetchall()) == 0:
@@ -307,7 +317,7 @@ async def blogUpdate(self):
 		print("Blog Updated")
 	except Exception as f:
 		e = traceback.format_exc()
-		logToChannel(self, "Blog Update", "Blog failed to update with the following exception\n" + e)
+		await logToChannel(self, "Blog Update", "Blog failed to update with the following exception\n" + e)
 		print(e)
 
 async def assetUpdate(self):
@@ -336,9 +346,135 @@ async def assetUpdate(self):
 		print("Assets Updated")
 	except Exception as f:
 		e = traceback.format_exc()
-		logToChannel(self,"Asset update", "Assets failed to update with the following exception\n" + e)
+		await logToChannel(self,"Asset update", "Assets failed to update with the following exception\n" + e)
 		print(e)
+
+async def socialsUpdate(self):
+	try: 
+		# Connects to local SQLite DB, checks if socials table exists, creates if it doesn't.
+		con = sqlite3.connect(sqlLiteDB)
+		cur = con.cursor()
+		tbl = cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='socials';")
+		if len(tbl.fetchall()) == 0:
+			cur.execute("CREATE TABLE socials (ID INTEGER NOT NULL PRIMARY KEY, category, rank, site, desc, usr, url, img);")
+			con.commit()
+			print("Created table")
+		
+		# Usual boilerplate to get appropriate channel, then run through messages
+		channelID = channels[channeltypes.index('SC')]
+		channelData = self.get_channel(channelID)
+		messages = []
+		async for message in channelData.history():
+			# Finds the message ID, then checks the attachments. 
+			# If there's only 1 attachment AND that attachment is an image, sets the attachment flag to true for later
+			msgID = message.id
+			messages.append(msgID)
+			attach = message.attachments
+			if len(attach) != 1 or attach[0].content_type.split("/")[0] != "image":
+				attachment = False
+			else:
+				attachment = True
+			msgContent = message.clean_content
+
+			try:
+				cur.execute(f"INSERT INTO socials (ID) VALUES ({msgID})")
+			except:
+				pass
+
+			for meta in msgContent.split("\n"):
+				typ = meta.split(": ")[0]
+				content = meta.split(": ")[1]
+				sqlUpd = ""
+				match typ:
+					# While dealing with inserting the site's data, tells the image to be downloaded.
+					case "Site":
+						if attachment:
+							file = await imgDownload(self, attach[0], content.replace(".","_"), assetsPath + pathDelim + "avatars")
+							img = f"/assets/avatars/{file}"
+							sqlUpd = f"site = \"{content}\", img = \"{img}\""
+
+						sqlCol = "site"
+					
+					# Below cases set the appropriate SQL column name based on message key
+					case "Category":
+						sqlCol = "category"
+					case "Rank":
+						sqlCol = "rank"
+					case "Username":
+						sqlCol = "usr"
+					case "Link":
+						sqlCol = "url"
+					case "Description":
+						sqlCol = "desc"
+				
+				if sqlUpd == "":
+					sqlUpd = f"{sqlCol} = \"{content}\""
+				cur.execute(f"UPDATE socials SET {sqlUpd} WHERE ID = {msgID}")
+
+			con.commit()
+		
+		cur.execute("SELECT id FROM socials")
+		allIDs = cur.fetchall()
+		for sqlID in allIDs:
+			if sqlID[0] not in messages:
+				cur.execute(f"DELETE FROM socials WHERE id = {sqlID[0]}")
+		con.commit()
+
+		cur.execute("SELECT category, site, desc, usr, url, img FROM socials ORDER BY category, rank")
+		allLinks = cur.fetchall()
+		
+		categories = []
+		catCount = 0
+		linkHTML = []
+		for entry in allLinks:
+			category = entry[0]
+			site = entry[1]
+			desc = entry[2]
+			try:
+				l = len(entry[3])
+				usr = f"Username - {entry[3]}"
+			except:
+				usr = ""
+			url = entry[4]
+			img = entry[5]
+			if category not in categories:
+				categories.append(category)
+				if catCount < len(categories) and catCount > 0:
+					linkHTML.append("</div>")
+				linkHTML.append(f"<hr><button type=\"button\" class=\"collapsible\">{category}</button>")
+				linkHTML.append("<div class=\"collapse-content\">")
+				catCount = catCount + 1
+			table = f"""<hr> <a href="{url}">
+<div class="fourtysixty stack">
+<div class="first"> <img src="{img}" alt="{site} logo"> </div>
+<div class="second"> <h2>{site}</h2> <h3><i>{usr}</i></h3> <p>{desc}</p> </div>
+</div></a>
+"""
+			for l in table.split("\n"):
+				linkHTML.append(l)
+		linkHTML.append("</div>")
+
+		with open(assetsPath + pathDelim + "socialtemplate.html", 'r') as socialIndex:
+			indexHTML = socialIndex.read()
+			lines = indexHTML.split("\n")
+			repl = lines.index("{{REPLACE}}")
+			pre = lines[0:repl]
+			aft = lines[repl+1::]
+
+		# Merges arrays around body text generated
+		html = []
+		html += pre 
+		html += linkHTML
+		html += aft
+		await writeTo(htmlDir + pathDelim + "socials" + pathDelim + "index.html",html)	
+
+		print("Socials Updated")
 	
+	except Exception as f:
+		e = traceback.format_exc()
+		await logToChannel(self,"Socials update", "Social update failed to update with the following exception\n" + e)
+		print(e)
+
 async def update(self,msg=0):
 	await dotEnvUpdate()
 	updated = 0
@@ -351,6 +487,8 @@ async def update(self,msg=0):
 		updated = updated + 1
 		await assetUpdate(self)
 		updated = updated + 1
+		await socialsUpdate(self)
+		updated = updated + 1
 	elif channeltypes[channels.index(msg.channel.id)] == "MB":
 		await microblogUpdate(self)
 		updated = updated + 1
@@ -362,6 +500,9 @@ async def update(self,msg=0):
 		updated = updated + 1
 	elif channeltypes[channels.index(msg.channel.id)] == "AS":
 		await assetUpdate(self)
+		updated = updated + 1
+	elif channeltypes[channels.index(msg.channel.id)] == "SC":
+		await socialsUpdate(self)
 		updated = updated + 1
 	print(f'Updated from {updated} channels')
 

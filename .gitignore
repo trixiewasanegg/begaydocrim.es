@@ -8,6 +8,7 @@ PUBLIC_HTML/assets/avatars/*
 PUBLIC_HTML/assets/upload/*
 PUBLIC_HTML/assets/micro/*
 
+*/socials/*
 */blog/*
 
 *.png

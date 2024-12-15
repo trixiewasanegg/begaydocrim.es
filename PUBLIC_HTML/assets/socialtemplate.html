@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- (c) 2024 - BeGay-DoCrim.Es | GNU General Public License v3.0 -->
+    
+    <title> Trixie's Socials | BeGay-DoCrim.Es  </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="UTF-8">
+    <!-- jquery to load common header & head details-->
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script> 
+        $(function(){
+            $(".header").load("/assets/header.html");
+            $(".footer").load("/assets/footer.html");
+        });
+
+        $.get("/assets/commonhead.html", function(data){
+            $("head").append(data);
+        });
+    </script>
+</head>
+
+<body>
+<div class="container">
+    <div class="header"></div>
+    <div class="socials">
+    <h1>Where else can you find me on the internet?</h1>
+{{REPLACE}}
+    </div>
+    <div class="footer"></div>
+</div>
+
+<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+</script>
+</body>
+</html>
