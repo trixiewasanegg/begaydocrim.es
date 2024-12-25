@@ -1,0 +1,72 @@
+/*
+        GLOBAL STYLES
+===========================================================================================================================================================
+*/
+
+/* Variables */
+:root {
+    --padding: 0.5vw;
+    --contentWidth: 100vw;
+    --mainColor: antiquewhite;
+    --light-contrast: #E34234;
+    --light-alt: #FFFFFF;
+    --dark-contrast: #696969;
+    --ordFont: "Roboto", sans-serif;
+    --titleFont: "Pacifico", cursive;
+    --font-size: 1.25vh;
+}
+
+/* Body Calcs */
+body {
+    background-color: var(--mainColor);
+    font-family: var(--ordFont);
+    height: 100%;
+	margin: 0;
+}
+
+.container {
+    width: 100%;
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+}
+
+.sidebar {
+	background-color: var(--light-contrast);
+	color: var(--light-alt);
+}
+
+.abtDesc {
+	padding: var(--padding)
+}
+.prof-img {
+	max-width: 200px;
+	display: block;
+	margin: auto;
+}
+
+.microMsgTitle {
+    font-size: auto;
+    text-align: center;
+    height: fit-content;
+}
+
+.microMsgContainer {
+    overflow: hidden;
+    flex-direction: column;
+    height: 100%;
+}
+
+.microMsgScroll {
+    overflow-y: auto;
+	padding: var(--padding);
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
+    -ms-overflow-style: thin;  /* IE and Edge */
+    scrollbar-width: thin;  /* Firefox */
+}
+
+.microMsgScroll md-block, .microMsgScroll img {
+    width: 100%;
+    height: auto;
+}

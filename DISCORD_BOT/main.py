@@ -161,19 +161,15 @@ async def aboutUpdate(self):
 		markdownPath = channelMD[channeltypes.index('AB')]
 		channelData = self.get_channel(channelID)
 		markdownLines = []
-		markdownLines.append(f"# Current contributors of {channelData.guild.name}")
-		markdownLines.append("<br />")
-		markdownLines.append('<table style="width:100%">')
 		async for message in channelData.history(limit=100):
 			author = message.author.display_name
 			attachment = message.attachments[0]
 			filen = await imgDownload(self, attachment, author, assetsPath + pathDelim + "avatars")
 			content = message.clean_content
-			markdownLines.append("<tr>")
-			markdownLines.append(f'<td style="width:30%"><img src="/assets/avatars/{filen}" class="prof-img" alt="{author} display image"></td>')
-			markdownLines.append(f'<td style="width:70%" class="prof-desc"><h3>{author}</h3><br />{content}</td>')
-			markdownLines.append("</tr>")
-		markdownLines.append("</table>")
+			markdownLines.append("<div class=\"abtContainer\">")
+			markdownLines.append(f'<div class="abtImage"><img src="/assets/avatars/{filen}" class="prof-img" alt="{author} display image"></div>')
+			markdownLines.append(f'<div class="abtDesc">{content}</div>')
+			markdownLines.append("</div>")
 		await writeTo(markdownPath, markdownLines)
 		print("About Updated")
 	except Exception as f:
@@ -301,13 +297,14 @@ async def blogUpdate(self):
 			pre = lines[0:repl]
 			aft = lines[repl+1::]
 
-		# Meges arrays around body text generated
+		# Merges arrays around body text generated
 		html = []
 		html += pre 
 		html += postbody
 		html += aft	
 		#Writes to file
 		await writeTo(tmpDir + pathDelim + "index.html", html)
+		await writeTo(assetsPath + pathDelim + "postMD.md", postbody)
 
 		# Copies temp back into live folders & removes temp
 		shutil.rmtree(postsDir)
