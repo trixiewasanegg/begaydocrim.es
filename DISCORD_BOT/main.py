@@ -286,7 +286,7 @@ async def blogUpdate(self):
 			publishdate = datetime.strptime(post[2], "%Y-%m-%d").date()
 			publishdate = datetime.strftime(publishdate,"%B %d, %Y")
 			postbody.append("<div class=\"post\">\n")
-			postbody.append(f"<div class=\"posttitle\"><a href=\"{post[0]}\"><h2>{post[1]}</h2></a><i>Published: {publishdate} by {post[3]}</i></div>\n")
+			postbody.append(f"<div class=\"posttitle\"><a href=\"/blog/{post[0]}\"><h2>{post[1]}</h2></a><i>Published: {publishdate} by {post[3]}</i></div>\n")
 			postbody.append(f"<div class=\"postexcerpt\"><p>{post[4]}</p></div>\n</div>\n")
 
 		# Gets template file from assets, splits into 2 arrays
