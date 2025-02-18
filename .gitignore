@@ -4,6 +4,7 @@
 *.db
 
 PUBLIC_HTML/assets/*.md
+PUBLIC_HTML/assets/post-index.html
 PUBLIC_HTML/assets/avatars/*
 PUBLIC_HTML/assets/upload/*
 PUBLIC_HTML/assets/micro/*

@@ -132,12 +132,11 @@ async def microblogUpdate(self):
 				replyTo = replyMsg.author.display_name
 				replyContent = replyMsg.clean_content
 				content = content + "<br />\n<br />\n_Original Message:_<br />\n> " + replyContent
-				context = "\n_replied to " + replyTo + " at " + datestamp + "_<br />"
+				context = "\n_replied to a previous message at " + datestamp + "_<br /><br />"
 			else:
-				context = "\n_wrote at " + datestamp + "_<br />"
+				context = "\n_" + datestamp + "_<br /><br />"
 
 			# Appends markdown file with the content & context
-			markdownLines.append("### " + author + "\n")
 			markdownLines.append(context)
 			markdownLines.append(content + "\n")
 			for attachment in attached:
@@ -285,26 +284,14 @@ async def blogUpdate(self):
 		for post in allposts:
 			publishdate = datetime.strptime(post[2], "%Y-%m-%d").date()
 			publishdate = datetime.strftime(publishdate,"%B %d, %Y")
-			postbody.append("<div class=\"post\">\n")
-			postbody.append(f"<div class=\"posttitle\"><a href=\"/blog/{post[0]}\"><h2>{post[1]}</h2></a><i>Published: {publishdate} by {post[3]}</i></div>\n")
-			postbody.append(f"<div class=\"postexcerpt\"><p>{post[4]}</p></div>\n</div>\n")
+			postbody.append(f"<a href=\"/blog/{post[0]}\">\n<div class=\"post\">") # Post's div wrapper
+			postbody.append(f"<div class=\"posttitle\"><i>{publishdate}</i><h2>{post[1]}</h2></div>") # Heading info
+			postbody.append(f"<div class=\"postexcerpt\"><p>{post[4]}</p></div>\n</div></a>\n") # Excerpt
+			postbody.append("<div class=\"gap\"><hr></div>\n") # Gap div
 
-		# Gets template file from assets, splits into 2 arrays
-		with open(assetsPath + pathDelim + "postindex.html", 'r') as postIndex:
-			indexHTML = postIndex.read()
-			lines = indexHTML.split("\n")
-			repl = lines.index("{{REPLACE}}")
-			pre = lines[0:repl]
-			aft = lines[repl+1::]
-
-		# Merges arrays around body text generated
-		html = []
-		html += pre 
-		html += postbody
-		html += aft	
 		#Writes to file
 		await writeTo(tmpDir + pathDelim + "index.html", html)
-		await writeTo(assetsPath + pathDelim + "postMD.md", postbody)
+		await writeTo(assetsPath + pathDelim + "post-index.html", postbody)
 
 		# Copies temp back into live folders & removes temp
 		shutil.rmtree(postsDir)

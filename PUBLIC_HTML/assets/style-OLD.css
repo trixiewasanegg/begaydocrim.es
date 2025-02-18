@@ -1,0 +1,440 @@
+/*
+        GLOBAL STYLES
+===========================================================================================================================================================
+*/
+
+/* Variables */
+:root {
+    --padding: 0.5vw;
+    --contentWidth: calc(100vw - var(--padding) * 4);
+    --mainColor: #FFD1DC;
+    --light-contrast: #FFFFFF;
+    --light-alt: antiquewhite;
+    --dark-contrast: #696969;
+    --ordFont: "Roboto", sans-serif;
+    --titleFont: "Pacifico", cursive;
+    --font-size: 1.25vh;
+}
+
+/* Body Calcs */
+body {
+    background-color: var(--mainColor);
+    font-family: var(--ordFont);
+    margin: var(--padding);
+    height: 100%;
+}
+
+.container {
+    width: var(--contentWidth);
+}
+
+/* H1/2 */
+h1, h2 {
+    font-family: var(--titleFont);
+    margin: 0px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+img {
+    display: block;
+    margin: auto;
+    height: 50vh;
+}
+
+/*
+        TABLE STYLES
+===========================================================================================================================================================
+*/
+
+.borderless {
+    max-width: 100%;
+    border: 0;
+}
+
+.twoUp {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.sixtyfourty {
+    display: grid;
+    grid-template-columns: 6fr 4fr;
+}
+
+.fourtysixty {
+    display: grid;
+    grid-template-columns: 4fr 6fr;
+}
+
+.fourtysixty div, .sixtyfourty div, .twoUp div {
+    padding: var(--padding);
+}
+
+.twoUp img {
+    max-width: 90%;
+    height:auto;
+}
+
+@media screen and (max-width: 600px) {
+    .fourtysixty img, .sixtyfourty img, .twoUp img {
+        max-width: 75vw;
+        height: auto;
+    }
+}
+
+/*
+        HEADER/FOOTER STYLES
+===========================================================================================================================================================
+*/
+
+.footer, .navBar {
+    gap: var(--padding);
+    padding: var(--padding);
+    background-color: var(--dark-contrast);
+    max-height: fit-content;
+}
+
+.footer p{
+    margin: 0px;
+}
+
+.navBar div, .footer p {
+    background-color: var(--light-contrast);
+    padding: var(--padding);
+    text-align: center;
+}
+
+.navBar p {
+    font-size: 1.25em;
+    margin: 0px;
+}
+
+.navBar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.title {
+    text-align: center;
+    margin: var(--padding);
+    font-size: 1.25em;
+}
+
+.title > h1 {
+    font-size: 4em;
+}
+
+/* Reformat for small screen */
+
+@media screen and (max-width: 600px) {
+    .title > h1 {
+        font-size: 10vw;
+    }
+}
+
+/*
+        HOMEPAGE STYLES
+===========================================================================================================================================================
+*/
+
+.homebody {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 4fr;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+    gap: var(--padding);
+    padding: var(--padding) 0px var(--padding) 0px;
+}
+
+.homebody h1 {
+    font-family: var(--ordFont);
+}
+
+.content h1 {
+    font-size: 3vw;
+}
+
+.sidebar h1 {
+    font-size: 2vw;
+}
+
+.content {
+    display: flex;
+}
+
+.sidebar {
+    display: grid;
+    grid-template-columns: 1;
+    grid-template-rows: 5fr 45fr;
+    height: 50vh;
+    min-height: 400px;
+}
+
+.content, .sidebar {
+    background-color: var(--light-contrast);
+    padding: 0px var(--padding) 0px var(--padding);
+}
+
+.microMsgTitle {
+    font-size: auto;
+    text-align: center;
+    height: fit-content;
+}
+
+.microMsgContainer {
+    overflow: hidden;
+    flex-direction: column;
+    height: 100%;
+}
+
+.microMsgScroll {
+    overflow-y: auto;
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
+    -ms-overflow-style: thin;  /* IE and Edge */
+    scrollbar-width: thin;  /* Firefox */
+}
+
+.microMsgScroll md-block, .microMsgScroll img {
+    width: 100%;
+    height: auto;
+}
+
+.prof-img {
+    height: 30vh;
+    width: auto;
+    padding-bottom: calc(var(--padding) * 2);
+}
+
+.prof-desc {
+    vertical-align: top;
+}
+
+.prof-desc h3 {
+    font-size: 2em;
+}
+
+/* Reformat for small screen */
+
+@media screen and (max-width: 600px) {
+    /* Reformat contributors */
+    .prof-img {
+        width: 30vw;
+        height: auto;
+        padding-bottom: calc(var(--padding) * 2);
+    }
+
+    .content {
+        height: fit-content;
+        font-size: 1.75vh;
+        padding: var(--padding);
+    }
+    .sidebar {
+        font-size: 1.5vh;
+        padding: var(--padding);
+    }
+
+    .homebody h1 {
+        font-size: 1.5em;
+        text-align: center;
+    }
+}
+
+/*
+        POSTINDEX STYLES
+===========================================================================================================================================================
+*/
+.postindex {
+    display: grid;
+    gap: var(--padding);
+    padding: var(--padding) 0px var(--padding) 0px;
+}
+
+.post {
+    display: grid;
+    height: fit-content;
+    padding: var(--padding);
+    background-color: var(--light-contrast);
+    grid-template-columns: 2fr 3fr;
+}
+
+.post > .posttitle {
+    padding: 0px 0px 0px 5%;
+}
+
+.postexcerpt {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+@media screen and (max-width: 600px) {
+    .postindex {gap: calc(var(--padding) *4);}
+    .post {display: flex; flex-flow: column; overflow: scroll; font-size: 1.5vh; padding: 0 5%;}
+    .post > .posttitle {padding: 0; text-align: center;}
+}
+
+/*
+        POST STYLES
+===========================================================================================================================================================
+*/
+
+.postmeta {
+    margin: 0px;
+    width: 100%;
+    text-align: center;
+    background-color: var(--light-alt);
+}
+
+.postmeta > div {
+    padding: calc(var(--padding) *2);
+}
+
+.postBody {
+    margin: var(--padding) 0px 0px 0px;
+    background-color: var(--light-contrast);
+}
+
+.postmeta hr {
+    margin: 0px
+}
+
+.postcontent {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/*
+        MARKDOWN STYLES
+===========================================================================================================================================================
+*/
+md-block h2 {
+    font-family: var(--ordFont);
+    text-align: left;
+    margin-top: var(--padding);
+    margin-bottom: var(--padding);
+}
+
+.postcontent {
+    padding: var(--padding) calc(var(--padding) * 2) ;
+}
+
+md-block blockquote {
+    font-weight: 300;
+}
+
+md-block blockquote br {
+    display: block;
+    margin-bottom: calc(var(--padding) *3);
+}
+
+/*
+        ABOUT STYLES
+===========================================================================================================================================================
+*/
+
+.aboutBody {
+    background-color: var(--light-contrast);
+    padding: var(--padding);
+    gap: var(--padding);
+}
+
+.contrib h1 {
+    font-size: 3vh;
+    text-align: center;
+    padding: var(--padding)
+}
+
+.licTxt {
+    background-color: var(--light-alt);
+    padding: calc(var(--padding) *2);
+    text-align: center;
+}
+
+/*
+        SOCIAL LINK STYLES
+===========================================================================================================================================================
+*/
+.socials {
+    background-color: var(--light-alt);
+
+    padding: var(--padding);
+
+    .collapsible {
+        background-color: var(--dark-contrast);
+        color: white;
+        width: 100%;
+        cursor: pointer;
+        padding: calc(var(--padding) * 3);
+        border: none;
+        text-align: center;
+        outline: none;
+        font-size: calc(var(--font-size) *3);
+    }
+    .collapse-content {
+        display: none;
+        overflow: hidden;
+        background-color: var(--light-contrast);
+    }
+
+    h1 {
+        text-align: center;
+    }
+    .stack {
+        background-color: var(--light-contrast);
+        padding: var(--padding);
+    }
+
+    .first, .second {
+        height: calc(var(--font-size) * 15);
+    }
+
+    img {
+        max-height: 80%;
+        width: auto;
+    }
+
+    a {
+        text-decoration: none;
+        color: #000000;
+    }
+    
+    @media screen and (max-width: 600px) {
+        div {
+            overflow: hidden;
+        }
+    }
+}
+
+/*
+        STACKING STYLES (LEAVE AT BOTTOM)
+===========================================================================================================================================================
+*/
+
+@media screen and (max-width: 600px) {
+    :root {
+        --padding: 0.5vh;
+    }
+    .stack {display: flex; flex-flow: column; overflow: scroll;}
+    .stack > .first {order: 1; max-height: fit-content;}
+    .stack > .second {order: 2;}
+    .stack > .third {order: 3;}
+    h1 {
+        font-size: 5vh;
+    }
+    h3 {
+        margin: 0;
+        font-size: 3vh;
+    }
+}

@@ -11,8 +11,7 @@
     <script>
         
         $(function(){
-            $(".header").load("/assets/header.html");
-            $(".footer").load("/assets/footer.html");
+            $(".sidebar").load("/assets/sidebar.html");
         });
 
         $.get("/assets/commonhead.html", function(data){
@@ -22,7 +21,7 @@
 </head>
 <body>
 <div class="container">
-    <div class="header"></div>
+    <div class="sidebar"></div>
 	<div class="aboutBody">
         <div class="contrib">
             <md-block src="/assets/about.md"></md-block>
@@ -34,7 +33,6 @@
             Be gay, do crimes, Stonewall was a riot.
         </div>
 	</div>
-	<div class="footer"></div>
 </div>
 </body>
 </html>

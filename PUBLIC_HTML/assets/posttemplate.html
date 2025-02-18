@@ -11,11 +11,10 @@
     <script>
         
         $(function(){
-            $(".header").load("/assets/header.html");
-            $(".footer").load("/assets/footer.html");
+            $(".sidebar").load("/assets/sidebar.html");
         });
 
-        $.get("/assets/commonhead.html", function(data){
+		$.get("/assets/commonhead.html", function(data){
             $("head").append(data);
         });
     </script>
@@ -24,7 +23,7 @@
 
 <body>
 <div class="container">
-    <div class="header"></div>
+    <div class="sidebar"></div>
     <div class="postBody">
         <div class="postmeta">
         <hr>
@@ -38,7 +37,6 @@
         <md-block src="./content.md"></md-block>
         </div>
     </div>
-    <div class="footer"></div>
 </div>
 </body>
 </html>
