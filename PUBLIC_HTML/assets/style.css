@@ -171,3 +171,182 @@ hr.sectDiv {
     width: 5%;
     margin: calc(var(--padding) *2) 0;
 }
+
+img {
+    display: block;
+    margin: auto;
+    height: 50vh;
+}
+
+/*
+        TABLE STYLES
+===========================================================================================================================================================
+*/
+
+.borderless {
+    max-width: 100%;
+    border: 0;
+}
+
+.twoUp {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.sixtyfourty {
+    display: grid;
+    grid-template-columns: 6fr 4fr;
+}
+
+.fourtysixty {
+    display: grid;
+    grid-template-columns: 4fr 6fr;
+}
+
+.fourtysixty div, .sixtyfourty div, .twoUp div {
+    padding: var(--padding);
+}
+
+.twoUp img {
+    max-width: 90%;
+    height:auto;
+}
+
+@media screen and (max-width: 600px) {
+    .fourtysixty img, .sixtyfourty img, .twoUp img {
+        max-width: 75vw;
+        height: auto;
+    }
+}
+
+/*
+        POST STYLES
+===========================================================================================================================================================
+*/
+
+.postmeta {
+    margin: 0px;
+    width: 100%;
+    text-align: center;
+    background-color: var(--light-alt);
+}
+
+.postmeta > div {
+    padding: calc(var(--padding) *2);
+}
+
+.postBody {
+    margin: var(--padding) 0px 0px 0px;
+    background-color: var(--light-contrast);
+}
+
+.postmeta hr {
+    margin: 0px
+}
+
+.postcontent {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/*
+        MARKDOWN STYLES
+===========================================================================================================================================================
+*/
+md-block h2 {
+    font-family: var(--ordFont);
+    text-align: left;
+    margin-top: var(--padding);
+    margin-bottom: var(--padding);
+}
+
+.postcontent {
+    padding: var(--padding) calc(var(--padding) * 2) ;
+}
+
+md-block blockquote {
+    font-weight: 300;
+}
+
+md-block blockquote br {
+    display: block;
+    margin-bottom: calc(var(--padding) *3);
+}
+
+/*
+        ABOUT STYLES
+===========================================================================================================================================================
+*/
+
+.aboutBody {
+    background-color: var(--light-contrast);
+    padding: var(--padding);
+    gap: var(--padding);
+}
+
+.contrib h1 {
+    font-size: 3vh;
+    text-align: center;
+    padding: var(--padding)
+}
+
+.licTxt {
+    background-color: var(--light-alt);
+    padding: calc(var(--padding) *2);
+    text-align: center;
+}
+
+/*
+        SOCIAL LINK STYLES
+===========================================================================================================================================================
+*/
+.socials {
+    background-color: var(--light-alt);
+
+    padding: var(--padding);
+
+    .collapsible {
+        background-color: var(--dark-contrast);
+        color: white;
+        width: 100%;
+        cursor: pointer;
+        padding: var(--padding);
+        border: none;
+        text-align: center;
+        outline: none;
+        font-size: calc(var(--font-size) *3);
+    }
+    .collapse-content {
+        display: none;
+        overflow: hidden;
+        background-color: var(--light-contrast);
+    }
+
+    h1 {
+        text-align: center;
+    }
+    .stack {
+        background-color: var(--light-contrast);
+        padding: var(--padding);
+    }
+
+    .first, .second {
+        height: calc(var(--font-size) * 15);
+    }
+
+    img {
+        max-height: 80%;
+        width: auto;
+    }
+
+    a {
+        text-decoration: none;
+        color: #000000;
+    }
+    
+    @media screen and (max-width: 600px) {
+        div {
+            overflow: hidden;
+        }
+    }
+}
