@@ -75,7 +75,7 @@ async def logToChannel(self, trigger, text):
 		author = str(trigger.author.id)
 		message = f"Re: https://discord.com/channels/{guildID}/{channelID}/{messageID}\n <@{author}> - This message has returned an error:\n{str(text)}"
 	except:
-		message = f"Re:{trigger}\n {text}"
+		message = f"Re: {trigger}\n {text}"
 	await logChannel.send(message)
 
 async def writeTo(path, lines):
@@ -110,35 +110,36 @@ async def imgDownload(self, attachment, filename, path):
 
 async def microblogUpdate(self):
 	try:
+		# Boilerplate to get info from channel
 		channelID = channels[channeltypes.index('MB')]
-		markdownPath = channelMD[channeltypes.index('MB')]
-		
 		channelData = self.get_channel(channelID)
+
+		# Runs through messages found in channelData, generates markdown file as list
 		markdownLines = []
 		async for message in channelData.history(limit=100):
 			# Gets datetime datestamp of message, converts to datestamp:
 			date = message.created_at
 			date = date.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('Australia/Perth'))
-			datestamp = date.strftime("%d %b %Y, %I:%M %p") + " AWST"
+			datestamp = f"\n_{date.strftime("%d %b %Y, %I:%M %p")} AWST_ <br /><br />"
 			
-			# Gets message author, avatar, message content, and embeds
-			author = message.author.display_name
+			# Gets message  message content and embeds
 			content = message.clean_content.replace("\n", "<br />")
 			attached = message.attachments
 			embeds = message.embeds
+
 			# Checks if reply, gets replied message details
 			if message.type == discord.MessageType.reply:
 				replyMsg = message.reference.resolved
-				replyTo = replyMsg.author.display_name
 				replyContent = replyMsg.clean_content
-				content = content + "<br />\n<br />\n_Original Message:_<br />\n> " + replyContent
-				context = "\n_replied to a previous message at " + datestamp + "_<br /><br />"
-			else:
-				context = "\n_" + datestamp + "_<br /><br />"
 
+				# Re formats content
+				content = f"{content}<hr class='microgap'>\n\n_Original Message:_<br />\n > {replyContent}"
+			
 			# Appends markdown file with the content & context
-			markdownLines.append(context)
+			markdownLines.append(datestamp)
 			markdownLines.append(content + "\n")
+
+			# Works through attachments & embeds, appending to markdown
 			for attachment in attached:
 				if attachment.content_type.split("/")[0] == "image":
 					filen = await imgDownload(self, attachment, str(message.id), assetsPath + pathDelim + "micro")
@@ -146,8 +147,12 @@ async def microblogUpdate(self):
 			for embed in embeds:
 				if embed.type == "video" or embed.type == "gifv":
 					markdownLines.append(f'<video controls> <source src="{embed.url}"> Your browser does not support the video tag. </video><br />\n')
+
+			# Final horizontal line to divide posts
 			markdownLines.append("---")
-		await writeTo(markdownPath, markdownLines)
+
+		# Writes markdown to path
+		await writeTo(channelMD[channeltypes.index('MB')], markdownLines)
 		print("Microblog Updated")
 	except Exception as f:
 		e = traceback.format_exc()
